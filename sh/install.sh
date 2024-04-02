@@ -24,3 +24,20 @@ sudo chmod +x /usr/local/bin/docker-compose &&
 
 sudo systemctl restart docker &&
 
+git clone -b stable/2.6.x https://github.com/artefactual/atom.git atom &&
+
+cd atom &&
+
+export COMPOSE_FILE="$PWD/docker/docker-compose.dev.yml"
+
+docker-compose up -d &&
+
+sysctl vm.max_map_count 262144 &&
+
+docker-compose up -d &&
+
+docker-compose exec atom php symfony tools:purge --demo &&
+
+docker-compose exec atom make -C plugins/arDominionPlugin &&
+
+docker-compose restart atom_worker
